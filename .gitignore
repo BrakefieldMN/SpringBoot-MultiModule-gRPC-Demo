@@ -73,3 +73,5 @@ fabric.properties
 # Directory level ignore
 .idea/
 .gradle/
+
+*.iml
