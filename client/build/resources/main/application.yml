@@ -1,5 +1,0 @@
-grpc:
-  port: 6060
-
-server:
-  port: 8181

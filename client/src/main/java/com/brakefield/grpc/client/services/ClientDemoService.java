@@ -27,7 +27,7 @@ public class ClientDemoService {
         try {
             response = blockingStub.sayHello(request);
         } catch (StatusRuntimeException e) {
-            log.error("RPC failed: {0}", e.getStatus());
+            log.error("RPC failed: {}", e.getStatus());
             return;
         }
         log.info("Greeting: " + response.getMessage());
