@@ -2,6 +2,7 @@ package com.brakefield.grpc.client.services;
 
 
 import com.brakefield.grpc.library.*;
+import com.google.common.base.Stopwatch;
 import io.grpc.Channel;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -9,6 +10,7 @@ import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class ClientDemoService {
@@ -40,16 +42,16 @@ public class ClientDemoService {
     }
 
     public void streamingGreet(Integer number) {
-        log.info("Will try to greet " + number + "people.");
+        log.info("Will try to greet " + number + " people.");
         final CountDownLatch finishLatch = new CountDownLatch(number);
         int i = 0;
-        while( i < number) {
 
             StreamObserver<HelloReply> request = new StreamObserver<>() {
                 @Override
                 public void onNext(HelloReply value) {
-                    log.info("Still " + finishLatch.getCount() + "messages to process");
                     finishLatch.countDown();
+                    log.info("Still " + finishLatch.getCount() + " messages to process");
+
                 }
 
                 @Override
@@ -64,6 +66,10 @@ public class ClientDemoService {
                     finishLatch.countDown();
                 }
             };
+        Stopwatch startime = Stopwatch.createStarted();
+
+
+        while( i < number) {
             StreamObserver<HelloRequest> requestObserver = asyncStub.sayHelloStreaming(request);
             try {
                 requestObserver.onNext(HelloRequest.newBuilder().setName("Got " + finishLatch.getCount()).build());
@@ -76,6 +82,9 @@ public class ClientDemoService {
             }
             i++;
         }
+
+        System.out.println("Using grpc took" + startime.stop().elapsed(TimeUnit.MILLISECONDS));
+
     }
 
 }

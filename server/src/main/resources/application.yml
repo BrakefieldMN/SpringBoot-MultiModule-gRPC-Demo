@@ -1,2 +1,8 @@
 grpc:
   port: 6565
+
+
+spring:
+  jackson:
+    serialization:
+      fail-on-self-references: false

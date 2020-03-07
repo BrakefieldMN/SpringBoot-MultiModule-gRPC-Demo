@@ -3,3 +3,8 @@ grpc:
 
 server:
   port: 8181
+
+spring:
+  jackson:
+    serialization:
+      fail-on-self-references: false

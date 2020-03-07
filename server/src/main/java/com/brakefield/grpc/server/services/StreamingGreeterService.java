@@ -9,6 +9,7 @@ import org.lognet.springboot.grpc.GRpcService;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Slf4j
 @GRpcService(interceptors = {LogInterceptor.class})
@@ -17,15 +18,12 @@ public class StreamingGreeterService extends StreamingGreeterGrpc.StreamingGreet
     @Override
     public StreamObserver<HelloRequest> sayHelloStreaming(StreamObserver<HelloReply> replyStreamObserver) {
         return new StreamObserver<>() {
-            private int count = 0;
 
             @Override
             public void onNext(HelloRequest value) {
-                count++;
-                if(count > REPLIES.size()){
-                    count = 0;
-                }
-                replyStreamObserver.onNext(REPLIES.get(count-1));
+                int random = ThreadLocalRandom.current().nextInt(0, 10 + 1);
+                log.info("Saying hello to: " + REPLIES.get(random));
+                replyStreamObserver.onNext(REPLIES.get(random));
             }
 
             @Override
@@ -35,7 +33,6 @@ public class StreamingGreeterService extends StreamingGreeterGrpc.StreamingGreet
 
             @Override
             public void onCompleted() {
-                replyStreamObserver.onNext(HelloReply.newBuilder().setMessage("Hello counter: " + count).build());
                 replyStreamObserver.onCompleted();
             }
         };
@@ -54,5 +51,5 @@ public class StreamingGreeterService extends StreamingGreeterGrpc.StreamingGreet
             HelloReply.newBuilder().setMessage("Hello Danny").build(),
             HelloReply.newBuilder().setMessage("Hello Brenden").build(),
             HelloReply.newBuilder().setMessage("Hello Jyothi").build()
-            );
+    );
 }
