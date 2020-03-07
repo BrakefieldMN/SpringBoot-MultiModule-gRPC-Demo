@@ -36,5 +36,24 @@ public class ClientDemoController {
             channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
         }
     }
+
+    @GetMapping("/grpc-test-async/{userrequests}")
+    void testGrpcGreet(@PathVariable(value = "userrequests") Integer userrequests) throws InterruptedException {
+        String target = "localhost:6565";
+        ManagedChannel channel = ManagedChannelBuilder.forTarget(target)
+                // Channels are secure by default (via SSL/TLS). For the example we disable TLS to avoid
+                // needing certificates.
+                .usePlaintext()
+                .build();
+        try {
+            ClientDemoService clientDemoService = new ClientDemoService(channel);
+            clientDemoService.streamingGreet(userrequests);
+        } finally {
+            // ManagedChannels use resources like threads and TCP connections. To prevent leaking these
+            // resources the channel should be shut down when it will no longer be used. If it may be used
+            // again leave it running.
+            channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
+        }
+    }
 }
 

@@ -25,12 +25,19 @@ repositories {
 	mavenCentral()
 }
 
+group = 'com.brakefield.grpc'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+def protobufVersion = '3.6.1'
+def grpcVersion = '1.16.1'
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compile 'io.github.lognet:grpc-spring-boot-starter:3.5.2'
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-ui', version: '1.2.33'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+	implementation group: 'io.grpc', name: 'grpc-all', version: '1.27.2'
 	compile 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -42,11 +49,7 @@ test {
 	useJUnitPlatform()
 }
 
-group = 'com.brakefield.grpc'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
-def protobufVersion = '3.6.1'
-def grpcVersion = '1.16.1'
+
 bootJar {
 	enabled = false
 }
@@ -66,9 +69,11 @@ protobuf {
 	}
 	generateProtoTasks {
 		all()*.plugins {
-			grpc {}
+			grpc {
+				outputSubDir = 'protoGen'
+			}
 		}
 	}
-	generatedFilesBaseDir = "$projectDir/src/generated"
+	generatedFilesBaseDir = "$projectDir/src/"
 }
 

@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-	compile project(':library')
+	implementation project(':library')
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compile 'org.projectlombok:lombok'
